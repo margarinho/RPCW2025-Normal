@@ -1,0 +1,152 @@
+12.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select ?conceito
+where
+{
+    :Isaac Newton a :Mestre;
+    :   ensina ?disciplina.
+
+    ?conceito :eEstudadoEm ?disciplina .
+}
+13.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select ?obra
+where
+{
+    ?obra a :Obras;
+        :explica :Recursividade.
+}
+
+14.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select ?disciplina
+where
+{
+    :Ciências_Sociais :eEstudadoEm ?disciplina .
+}
+
+15.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select ?aplicacao
+where
+{
+    :Lógica_Formal :temAplicacao ?Aplicacao .
+}
+16.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select ?disciplina
+where
+{
+    disciplina :pertenceA  :Ciências_Exatas.
+}
+17.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select mestre
+where
+{
+    mestre :nascidoEm :Século_XIX .
+}
+
+18. 
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select aprendiz
+where
+{
+    aprendiz :aprende :Programação .
+}
+
+19.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select ?disciplina (count(?aprendiz) as ?numeroaprendiz)
+where {
+    ?aprendiz a :Aprendiz ;
+              :aprende ?disciplina .
+}
+group by ?disciplina
+
+20.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select ?periodo (count(?conceito) as ?numeroConceito)
+where
+{
+ ?conceito :surgeEm ?periodo .
+}
+group by ?periodo
+
+21.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+select ?conceito (group_concat(STRAFTER(STR(?obra), "#"); separator=", ") as ?titulos)
+where {
+    ?obra a :Obras ;
+           :explica ?conceito .
+}
+group by ?conceito
+
+22.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#>  
+select ?disciplina (group_concat(STRAFTER(STR(?nome), "#"); separator=", ")  as ?aprendizes)
+where {
+    ?aprendiz a :Aprendiz ;
+              :aprende ?disciplina .
+}
+group by ?disciplina
+
+23. 
+
+24.
+: estudaCom rdf:type owl:ObjectProperty ;
+           rdfs:domain :Aprendiz ;
+           rdfs:range :Mestre .
+
+
+25.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+
+construct {
+  ?aprendiz :estudaCom ?mestre .
+}
+where {
+  ?aprendiz a :Aprendiz ;
+            :aprende ?disciplina .
+
+  ?mestre a :Mestre ;
+          :ensina ?disciplina .
+}
+
+insert {
+  ?aprendiz :estudaCom ?mestre .
+}
+where {
+  ?aprendiz a :Aprendiz ;
+            :aprende ?disciplina .
+
+  ?mestre a :Mestre ;
+          :ensina ?disciplina .
+}
+
+
+
+26.
+:daBasesPara rdf:type owl:ObjectProperty ;
+           rdfs:domain :Disciplina ;
+           rdfs:range :Aplicacao .
+
+
+27.
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#> 
+
+construct {
+  ?disciplina :daBasesPara ?aplicacao .
+}
+where {
+  ?disciplina a :Disciplina ;
+              :temAplicacao ?aplicacao .
+}
+
+insert {
+  ?disciplina :daBasesPara ?aplicacao .
+}
+where {
+  ?disciplina a :Disciplina ;
+              :temAplicacao ?aplicacao .
+}
