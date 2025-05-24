@@ -14,7 +14,7 @@ update_query = """
 PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#>
 
 INSERT {
-  ?aprendiz :estudaCom ?mestre .
+  ?aprendiz :estudaCom ?disciplina .
 }
 WHERE {
   ?aprendiz a :Aprendiz ;
@@ -27,7 +27,16 @@ WHERE {
 
 g.update(update_query)
 
-print(g.serialize(format='turtle').decode("utf-8") if isinstance(g.serialize(), bytes) else g.serialize(format='turtle'))
+q2 = """
+PREFIX : <http://www.semanticweb.org/magui/ontologies/2025/academia#>
 
-with open("sapientia_ind_updated.ttl", "w", encoding="utf-8") as f:
+SELECT ?aprendiz ?mestre WHERE {
+    ?aprendiz :estudaCom ?mestre .
+} LIMIT 10
+"""
+
+for row in g.query(q2):
+    print(row)
+
+with open("sapientia_ind_updated_estudaCom.ttl", "w", encoding="utf-8") as f:
     f.write(g.serialize(format="turtle"))
